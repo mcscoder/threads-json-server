@@ -1,0 +1,51 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "yasuo",
+      "firstName": "yasuo",
+      "lastName": "hasagi",
+      "password": "deathislikethewind",
+      "avatarURL": "public/images/yasuo.webp"
+    }
+  ],
+  "threads": [
+    {
+      "id": 1,
+      "text": "Death is like the wind, always by my side.\nDo not fear the darkness, fear the nothing after I am gone.\nIs a leaf's only purpose to fall?\nHonor is in the heart, not the name.\nThe road to ruin is shorter than you think.\nMy honor is left a long time ago.\nJustice. That's a pretty word.",
+      "post": true,
+      "userId": 1
+    },
+    {
+      "id": 2,
+      "post": true,
+      "text": "ok",
+      "userId": 1
+    },
+    {
+      "id": 3,
+      "post": true,
+      "text": "ok",
+      "userId": 1
+    },
+    {
+      "id": 4,
+      "post": true,
+      "text": "ok",
+      "userId": 1
+    },
+    {
+      "id": 5,
+      "post": true,
+      "text": "not ok",
+      "userId": 1
+    }
+  ],
+  "favoriteThreads": [
+    {
+      "userId": 1,
+      "threadId": 1
+    }
+  ],
+  "watchedThreads": []
+}
