@@ -1,6 +1,6 @@
-import { ThreadEntity } from "../../entities";
+import { ThreadEntity_Thread } from "../../entities";
 
 export type ThreadPostRequest = Pick<
-  ThreadEntity,
-  "text" | "post" | "mainThreadId" | "userId"
+  ThreadEntity_Thread,
+  "post" | "text" | "mainThreadId" | "userId"
 >;

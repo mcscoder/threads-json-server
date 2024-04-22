@@ -19,7 +19,8 @@
   },
   "scripts": {
     "prepare": "husky install",
-    "start": "npx tsc && node dist/main.js"
+    "start": "npx tsc && node dist/main.js",
+    "dev": "npx ts-node src/main.ts"
   },
   "dependencies": {
     "json-server": "^0.17.4",

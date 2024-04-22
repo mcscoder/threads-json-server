@@ -1,34 +1,53 @@
 import { Application } from "express";
 import { Repository } from "../repositories";
-import { ThreadPostRequest } from "../types/models/thread";
 import CommonUtils from "../utils/common";
+import { ThreadPostRequest } from "../types/models/thread";
 
 export function apiService(server: Application, db: Repository) {
-  // 1.1. Get all users
-  server.get("/api/users", (req, res) => {
-    req;
-    res.json(db.getAllUsers());
+  // 1.1. Get a user by userId
+  server.get("/api/user", (req, res) => {
+    const userId = req.get("userId");
+    res.json(db.getUserById(Number(userId)));
   });
 
-  // 2.1. Get all threads
-  server.get("/api/threads", (req, res) => {
-    req;
-    res.json(db.getAllThreads());
-  });
-
-  // 2.2. Post a thread
-  server.post("/api/threads", (req, res) => {
-    const thread: ThreadPostRequest = req.body;
-    db.addThread(thread);
-    res.json(CommonUtils.responseMessage("Your thread has been posted!"));
-  });
-
-  // 2.3. Get a list of random threads
-  server.get("/api/threads/random/:count", (req, res) => {
-    const userId: string | undefined = req.get("userId");
-    const count: string = req.params.count;
+  // 2.1. Get a thread by threadId
+  server.get("/api/thread/:threadId", (req, res) => {
+    const userId = req.get("userId");
+    const threadId = req.params.threadId;
     if (userId) {
-      res.json(db.getRandomThreads(Number(userId), Number(count)));
+      res.json(db.getThreadById(Number(threadId), Number(userId)));
+    } else {
+      res.json(
+        CommonUtils.responseMessage("userId in header is field missing")
+      );
+    }
+  });
+
+  // 2.2. Delete a thread by threadId
+  server.delete("/api/thread/:threadId", (req, res) => {
+    const threadId = req.params.threadId;
+    if (db.deleteThreadById(Number(threadId))) {
+      res.json(CommonUtils.responseMessage("Thread has been deleted"));
+    } else {
+      res.json(CommonUtils.responseMessage("threadId is not exist"));
+    }
+  });
+
+  // 2.3. Get random Threads
+  server.get("/api/thread/random/:count", (req, res) => {
+    const userId = req.get("userId");
+    const count = req.params.count;
+
+    res.json(db.getRandomThreads(Number(userId), Number(count)));
+  });
+
+  // 2.4. Post a Thread
+  server.post("/api/thread", (req, res) => {
+    const threadRequestBody: ThreadPostRequest = req.body;
+    console.log(threadRequestBody);
+    const success = db.postThread(threadRequestBody);
+    if (success) {
+      res.json(CommonUtils.responseMessage("Thread has been posted"));
     }
   });
 }
