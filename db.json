@@ -84,6 +84,18 @@
         "post": true,
         "text": "js is suck",
         "userId": 1
+      },
+      "14": {
+        "id": 14,
+        "post": true,
+        "text": "hope this works ",
+        "userId": 1
+      },
+      "15": {
+        "id": 15,
+        "post": true,
+        "text": "test endline\nhfjrhehdh\nfhrjdhdh\ndjdhdhrhrh",
+        "userId": 1
       }
     },
     "users": {
@@ -96,7 +108,9 @@
         "6": true,
         "7": true,
         "12": true,
-        "13": true
+        "13": true,
+        "14": true,
+        "15": true
       },
       "2": {
         "8": true,
@@ -108,25 +122,28 @@
   },
   "favoriteThreads": {
     "threads": {
-      "1": {
-        "1": true
-      },
-      "2": {
+      "1": {},
+      "2": {},
+      "3": {},
+      "5": {},
+      "6": {},
+      "10": {},
+      "12": {},
+      "15": {
         "1": true
       }
     },
     "users": {
       "1": {
-        "1": true,
-        "2": true
+        "15": true
       }
     }
   },
   "watchedThreads": {
     "users": {
       "1": {
-        "9": true,
-        "11": true
+        "13": true,
+        "14": true
       }
     }
   }

@@ -52,8 +52,6 @@ export class Repository {
       delete threads[threadId];
 
       // Write the modified data to the database
-      this.db.get("threads").set("threads", threads);
-      this.db.get("threads").set("users", users);
       this.db.write();
 
       return true;
@@ -81,12 +79,17 @@ export class Repository {
   getRandomThreads(userId: number, count: number): ThreadResponse[] {
     const threadResponse: ThreadResponse[] = [];
 
+    // Handle if user id in watched Threads is not initialized yet
+    const watchedThreadUserIds = this.db.get("watchedThreads").value()["users"];
+    if (!watchedThreadUserIds[userId]) {
+      watchedThreadUserIds[userId] = {};
+    }
+
     // Get all watched Thread ids of a user with userId provided
-    const watchedThreadIds =
-      this.db.get("watchedThreads").value()["users"][userId] || {};
+    const watchedThreadIds = watchedThreadUserIds[userId]!;
 
     // Get all Threads
-    const allThreads = this.db.get("threads").value()["threads"];
+    const allThreads = { ...this.db.get("threads").value()["threads"] };
 
     // Filter and remove watched Thread out of allThread
     Object.keys(watchedThreadIds).forEach((watchedThreadId) => {
@@ -111,7 +114,10 @@ export class Repository {
         }
       }
       threadResponse.push(this.getThreadById(finalThreadId, userId)!);
+      // watchedThreadIds[finalThreadId] = true;
     }
+
+    this.db.write();
 
     return threadResponse;
 
@@ -145,10 +151,52 @@ export class Repository {
     }
 
     // Write data to the database (sync to the database)
-    this.db.get("threads").set("threads", threads);
-    this.db.get("threads").set("users", users);
     this.db.write();
 
+    return true;
+  }
+
+  // 2.6. Mark favorite a Thread
+  favoriteThread(
+    threadId: number,
+    userId: number,
+    isFavorite: boolean
+  ): boolean {
+    const thread = this.db.get("threads").value()["threads"][threadId];
+    const user = this.db.get("users").value()[userId];
+
+    // Check existing, pass if Thread and User is existing
+    if (!thread || !user) {
+      return false;
+    }
+
+    const favoriteThreads = this.db.get("favoriteThreads").value()["threads"];
+    const favoriteThreadUsers = this.db.get("favoriteThreads").value()["users"];
+
+    // Handle if Thread has no favorite
+    if (!favoriteThreads[threadId]) {
+      favoriteThreads[threadId] = {};
+    }
+    // Handle if User has never favorited a Thread yet
+    if (!favoriteThreadUsers[userId]) {
+      favoriteThreadUsers[userId] = {};
+    }
+
+    // Handle favorite or unfavorite
+    if (isFavorite) {
+      // Favorite
+      favoriteThreads[threadId]![userId] = true;
+      favoriteThreadUsers[userId]![threadId] = true;
+    } else {
+      // Unfavorite
+      delete favoriteThreads[threadId]![userId];
+      delete favoriteThreadUsers[userId]![threadId];
+    }
+
+    // Sync to the database
+    this.db.write();
+
+    // Final operation
     return true;
   }
 }

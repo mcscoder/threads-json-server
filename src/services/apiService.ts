@@ -50,4 +50,24 @@ export function apiService(server: Application, db: Repository) {
       res.json(CommonUtils.responseMessage("Thread has been posted"));
     }
   });
+
+  // 2.5. Favorite a Thread
+  server.get("/api/thread/favorite/:threadId", (req, res) => {
+    const { threadId } = req.params;
+    const { isFavorite } = req.query;
+    const userId = req.get("userId");
+    const success = db.favoriteThread(
+      Number(threadId),
+      Number(userId),
+      Boolean(isFavorite)
+    );
+
+    if (success) {
+      res.json(CommonUtils.responseMessage("Favorited"));
+    } else {
+      res.json(
+        CommonUtils.responseMessage("Something went wrong, pls try again")
+      );
+    }
+  });
 }
