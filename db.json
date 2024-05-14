@@ -1,4 +1,8 @@
 {
+  "usernames": {
+    "yasuo": 1,
+    "leesin": 2
+  },
   "users": {
     "1": {
       "id": 1,
@@ -6,7 +10,7 @@
       "firstName": "yasuo",
       "lastName": "hasagi",
       "password": "deathislikethewind",
-      "avatarURL": "public/images/yasuo.webp"
+      "imageId": 1
     },
     "2": {
       "id": 2,
@@ -14,7 +18,7 @@
       "firstName": "lee",
       "lastName": "sin",
       "password": "blindmonk",
-      "avatarURL": "public/images/leesin.jpeg"
+      "imageId": 2
     }
   },
   "threads": {
@@ -26,8 +30,11 @@
           "post": true,
           "userId": 1
         },
-        "threadReplies": {
-          "1": true
+        "threadReplies": {},
+        "images": {},
+        "dateTime": {
+          "createdAt": 1715217625868,
+          "updatedAt": 1715217625868
         }
       },
       "2": {
@@ -37,45 +44,421 @@
           "text": "You will my hands\nI will struggle, I will fail but to surrender is a privilege I do not have\nHah, rethink your approach",
           "userId": 2
         },
-        "threadReplies": {}
+        "threadReplies": {
+          "3": true,
+          "5": true,
+          "9": true,
+          "11": true,
+          "12": true
+        },
+        "images": {},
+        "dateTime": {
+          "createdAt": 1715217625868,
+          "updatedAt": 1715217625868
+        }
+      },
+      "3": {
+        "mainThread": {
+          "id": 3,
+          "text": "meme kựk mạnk",
+          "userId": 1
+        },
+        "threadReplies": {
+          "1": true,
+          "2": true,
+          "4": true,
+          "7": true,
+          "8": true,
+          "13": true
+        },
+        "images": {
+          "3": true,
+          "4": true
+        },
+        "dateTime": {
+          "createdAt": 1715249536980,
+          "updatedAt": 1715249536980
+        }
+      },
+      "4": {
+        "mainThread": {
+          "id": 4,
+          "text": "mêm cựk mạnk",
+          "userId": 1
+        },
+        "threadReplies": {
+          "6": true,
+          "10": true
+        },
+        "images": {
+          "6": true
+        },
+        "dateTime": {
+          "createdAt": 1715266244511,
+          "updatedAt": 1715266244511
+        }
       }
     },
     "threadReplies": {
       "1": {
         "threadReply": {
           "id": 1,
-          "mainThreadId": 1,
-          "text": "danh yasuo ngu nhu bo bay dat, tao da cho may phat bay gio",
+          "mainThreadId": 3,
+          "text": "meme này hài quá haha",
+          "userId": 1
+        },
+        "threadReplyingReplies": {},
+        "images": {},
+        "dateTime": {
+          "createdAt": 1715249987276,
+          "updatedAt": 1715249987276
+        }
+      },
+      "2": {
+        "threadReply": {
+          "id": 2,
+          "mainThreadId": 3,
+          "text": "masakaaaa",
+          "userId": 1
+        },
+        "threadReplyingReplies": {},
+        "images": {},
+        "dateTime": {
+          "createdAt": 1715250006428,
+          "updatedAt": 1715250006428
+        }
+      },
+      "3": {
+        "threadReply": {
+          "id": 3,
+          "mainThreadId": 2,
+          "text": "ghê",
+          "userId": 1
+        },
+        "threadReplyingReplies": {},
+        "images": {},
+        "dateTime": {
+          "createdAt": 1715250061793,
+          "updatedAt": 1715250061793
+        }
+      },
+      "4": {
+        "threadReply": {
+          "id": 4,
+          "mainThreadId": 3,
+          "text": "góp chúk mêm",
+          "userId": 1
+        },
+        "threadReplyingReplies": {},
+        "images": {
+          "5": true
+        },
+        "dateTime": {
+          "createdAt": 1715251198956,
+          "updatedAt": 1715251198956
+        }
+      },
+      "5": {
+        "threadReply": {
+          "id": 5,
+          "mainThreadId": 2,
+          "text": "solo lee sin?",
+          "userId": 1
+        },
+        "threadReplyingReplies": {},
+        "images": {},
+        "dateTime": {
+          "createdAt": 1715265721353,
+          "updatedAt": 1715265721353
+        }
+      },
+      "6": {
+        "threadReply": {
+          "id": 6,
+          "mainThreadId": 4,
+          "text": "mêm hay",
+          "userId": 1
+        },
+        "threadReplyingReplies": {},
+        "images": {},
+        "dateTime": {
+          "createdAt": 1715266266612,
+          "updatedAt": 1715266266612
+        }
+      },
+      "7": {
+        "threadReply": {
+          "id": 7,
+          "mainThreadId": 3,
+          "text": "chu nay he",
+          "userId": 1
+        },
+        "threadReplyingReplies": {},
+        "images": {},
+        "dateTime": {
+          "createdAt": 1715312426654,
+          "updatedAt": 1715312426654
+        }
+      },
+      "8": {
+        "threadReply": {
+          "id": 8,
+          "mainThreadId": 3,
+          "text": "haha itachi",
+          "userId": 1
+        },
+        "threadReplyingReplies": {},
+        "images": {},
+        "dateTime": {
+          "createdAt": 1715312485761,
+          "updatedAt": 1715312485761
+        }
+      },
+      "9": {
+        "threadReply": {
+          "id": 9,
+          "mainThreadId": 2,
+          "text": "th ngu lee sin solo yáuo ko",
+          "userId": 1
+        },
+        "threadReplyingReplies": {},
+        "images": {},
+        "dateTime": {
+          "createdAt": 1715312540111,
+          "updatedAt": 1715312540111
+        }
+      },
+      "10": {
+        "threadReply": {
+          "id": 10,
+          "mainThreadId": 4,
+          "text": "ok",
+          "userId": 1
+        },
+        "threadReplyingReplies": {},
+        "images": {},
+        "dateTime": {
+          "createdAt": 1715410594742,
+          "updatedAt": 1715410594742
+        }
+      },
+      "11": {
+        "threadReply": {
+          "id": 11,
+          "mainThreadId": 2,
+          "text": "may dung co ma sao lol",
           "userId": 2
         },
-        "threadReplyingReplies": {}
+        "threadReplyingReplies": {},
+        "images": {},
+        "dateTime": {
+          "createdAt": 1715606062649,
+          "updatedAt": 1715606062649
+        }
+      },
+      "12": {
+        "threadReply": {
+          "id": 12,
+          "mainThreadId": 2,
+          "text": "bo may may a th gay",
+          "userId": 2
+        },
+        "threadReplyingReplies": {},
+        "images": {
+          "7": true
+        },
+        "dateTime": {
+          "createdAt": 1715667538974,
+          "updatedAt": 1715667538974
+        }
+      },
+      "13": {
+        "threadReply": {
+          "id": 13,
+          "mainThreadId": 3,
+          "text": "$$$",
+          "userId": 2
+        },
+        "threadReplyingReplies": {},
+        "images": {},
+        "dateTime": {
+          "createdAt": 1715667650829,
+          "updatedAt": 1715667650829
+        }
       }
     },
     "threadReplyingReplies": {},
     "users": {
       "1": {
-        "1": true
+        "1": true,
+        "3": {
+          "dateTime": {
+            "createdAt": 1715249536980,
+            "updatedAt": 1715249536980
+          }
+        },
+        "4": {
+          "dateTime": {
+            "createdAt": 1715266244511,
+            "updatedAt": 1715266244511
+          }
+        }
       },
       "2": {
         "2": true
+      }
+    },
+    "threadReplyUsers": {
+      "1": {
+        "2": {
+          "3": {
+            "dateTime": {
+              "createdAt": 1715250061793,
+              "updatedAt": 1715250061793
+            }
+          },
+          "5": {
+            "dateTime": {
+              "createdAt": 1715265721353,
+              "updatedAt": 1715265721353
+            }
+          },
+          "9": {
+            "dateTime": {
+              "createdAt": 1715312540111,
+              "updatedAt": 1715312540111
+            }
+          }
+        },
+        "3": {
+          "1": {
+            "dateTime": {
+              "createdAt": 1715249987276,
+              "updatedAt": 1715249987276
+            }
+          },
+          "2": {
+            "dateTime": {
+              "createdAt": 1715250006428,
+              "updatedAt": 1715250006428
+            }
+          },
+          "4": {
+            "dateTime": {
+              "createdAt": 1715251198956,
+              "updatedAt": 1715251198956
+            }
+          },
+          "7": {
+            "dateTime": {
+              "createdAt": 1715312426654,
+              "updatedAt": 1715312426654
+            }
+          },
+          "8": {
+            "dateTime": {
+              "createdAt": 1715312485761,
+              "updatedAt": 1715312485761
+            }
+          }
+        },
+        "4": {
+          "6": {
+            "dateTime": {
+              "createdAt": 1715266266612,
+              "updatedAt": 1715266266612
+            }
+          },
+          "10": {
+            "dateTime": {
+              "createdAt": 1715410594742,
+              "updatedAt": 1715410594742
+            }
+          }
+        }
+      },
+      "2": {
+        "2": {
+          "11": {
+            "dateTime": {
+              "createdAt": 1715606062649,
+              "updatedAt": 1715606062649
+            }
+          },
+          "12": {
+            "dateTime": {
+              "createdAt": 1715667538974,
+              "updatedAt": 1715667538974
+            }
+          }
+        },
+        "3": {
+          "13": {
+            "dateTime": {
+              "createdAt": 1715667650829,
+              "updatedAt": 1715667650829
+            }
+          }
+        }
       }
     }
   },
   "favoriteThreads": {
     "threads": {
       "1": {},
-      "2": {}
+      "2": {
+        "2": true
+      },
+      "3": {},
+      "4": {
+        "1": true
+      }
     },
-    "threadReplies": {},
+    "threadReplies": {
+      "9": {
+        "1": true
+      },
+      "11": {
+        "2": true
+      },
+      "12": {
+        "2": true
+      }
+    },
     "threadReplyingReplies": {},
     "users": {
-      "1": {}
+      "1": {
+        "4": true
+      },
+      "2": {
+        "2": true
+      }
     },
-    "threadReplyUsers": {}
+    "threadReplyUsers": {
+      "1": {
+        "9": true
+      },
+      "2": {
+        "11": true,
+        "12": true
+      }
+    }
   },
   "watchedThreads": {
     "users": {
-      "1": {}
+      "1": {},
+      "2": {}
+    }
+  },
+  "resources": {
+    "images": {
+      "1": "public/images/yasuo.webp",
+      "2": "public/images/leesin.jpeg",
+      "3": "public/images/1715249536931-54703504.webp",
+      "4": "public/images/1715249536935-68771465.webp",
+      "5": "public/images/1715251198790-256349852.webp",
+      "6": "public/images/1715266244475-88208598.webp",
+      "7": "public/images/1715667538901-109242645.webp"
     }
   }
 }

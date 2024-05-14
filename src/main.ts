@@ -1,16 +1,13 @@
 import jsonServer from "json-server";
 import { DatabaseEntity } from "./types/entities/Database";
 import express from "express";
-import path from "path";
 import { Repository } from "./repositories";
 import { apiService } from "./services";
+import { commonPath } from "./constants";
 
 const server = jsonServer.create();
 const router = jsonServer.router<DatabaseEntity>("db.json");
 const middlewares = jsonServer.defaults();
-const commonPath = {
-  publicImage: path.join(__dirname, "../public/images"),
-};
 
 server.use(middlewares);
 server.use(jsonServer.bodyParser);

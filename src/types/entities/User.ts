@@ -9,5 +9,5 @@ export type UserEntity_User = {
   firstName: string;
   lastName: string;
   password: string;
-  avatarURL: string;
+  imageId: number;
 };
