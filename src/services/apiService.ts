@@ -150,13 +150,67 @@ export function apiService(server: Application, db: Repository) {
 
   // 2.9. Get all Threads by User Id
   server.get("/api/user/threads", (req, res) => {
-    const userId = req.get("userId");
-    res.json(db.getThreadsByUserId(Number(userId)));
+    const profileUserId = req.get("profileUserId");
+    const currentUserId = req.get("currentUserId");
+    res.json(
+      db.getThreadsByUserId(Number(profileUserId), Number(currentUserId))
+    );
   });
 
   // 2.10. Get all Thread Replies by User Id
   server.get("/api/user/replies", (req, res) => {
-    const userId = req.get("userId");
-    res.json(db.getAllUserReplies(Number(userId)));
+    const profileUserId = req.get("profileUserId");
+    const currentUserId = req.get("currentUserId");
+    res.json(
+      db.getAllRepliesByUser(Number(profileUserId), Number(currentUserId))
+    );
   });
+
+  // 2.11. Post reply to another reply
+  server.post("/api/thread/replying/reply", (req, res) => {
+    const threadRequestBody: ThreadPostRequest = req.body;
+    const success = db.postThreadReplyingReply(threadRequestBody);
+    if (success) {
+      res.json(
+        CommonUtils.responseMessage("Thread replying reply has bene posted")
+      );
+    }
+  });
+
+  // 2.12. Get all replying replies by reply Id
+  server.get("/api/thread/replying/reply/:threadReplyId", (req, res) => {
+    const threadReplyId = Number(req.params.threadReplyId);
+    const currentUserId = Number(req.get("userId"));
+    const threadReplyingReplies = db.getThreadReplyingReplies(
+      threadReplyId,
+      currentUserId
+    );
+
+    if (threadReplyingReplies) {
+      res.json(threadReplyingReplies);
+    }
+  });
+
+  // 2.13. Favorite a Thread Replying Reply
+  server.get(
+    "/api/thread/replying/reply/favorite/:threadReplyingReplyId",
+    (req, res) => {
+      const threadReplyingReplyId = req.params.threadReplyingReplyId;
+      const { isFavorite } = req.query;
+      const currentUserId = req.get("userId");
+      const success = db.favoriteThreadReplyingReply(
+        Number(threadReplyingReplyId),
+        Number(currentUserId),
+        Boolean(isFavorite)
+      );
+
+      if (success) {
+        res.json(CommonUtils.responseMessage("Favorited"));
+      } else {
+        res.json(
+          CommonUtils.responseMessage("Something went wrong, pls try again")
+        );
+      }
+    }
+  );
 }

@@ -22,32 +22,163 @@
     }
   },
   "threads": {
-    "threads": {},
-    "threadReplies": {},
-    "threadReplyingReplies": {},
-    "users": {},
-    "threadReplyUsers": {},
-    "threadReplyingReplyUsers": {}
+    "threads": {
+      "1": {
+        "mainThread": {
+          "id": 1,
+          "text": "ok",
+          "userId": 2
+        },
+        "threadReplies": {},
+        "images": {},
+        "dateTime": {
+          "createdAt": 1716129537235,
+          "updatedAt": 1716129537235
+        }
+      },
+      "2": {
+        "mainThread": {
+          "id": 2,
+          "text": "ok",
+          "userId": 2
+        },
+        "threadReplies": {
+          "1": true
+        },
+        "images": {
+          "3": true
+        },
+        "dateTime": {
+          "createdAt": 1716129561327,
+          "updatedAt": 1716129561327
+        }
+      }
+    },
+    "threadReplies": {
+      "1": {
+        "threadReply": {
+          "id": 1,
+          "mainThreadId": 2,
+          "text": "hahaha",
+          "userId": 2
+        },
+        "threadReplyingReplies": {
+          "1": true
+        },
+        "images": {},
+        "dateTime": {
+          "createdAt": 1716129679665,
+          "updatedAt": 1716129679665
+        }
+      }
+    },
+    "threadReplyingReplies": {
+      "1": {
+        "threadReplyingReply": {
+          "id": 1,
+          "text": "hahah mar no ngu vl",
+          "threadReplyId": 1,
+          "userId": 1
+        },
+        "images": {},
+        "dateTime": {
+          "createdAt": 1716129782971,
+          "updatedAt": 1716129782971
+        }
+      }
+    },
+    "users": {
+      "2": {
+        "1": {
+          "dateTime": {
+            "createdAt": 1716129537235,
+            "updatedAt": 1716129537235
+          }
+        },
+        "2": {
+          "dateTime": {
+            "createdAt": 1716129561327,
+            "updatedAt": 1716129561327
+          }
+        }
+      }
+    },
+    "threadReplyUsers": {
+      "2": {
+        "2": {
+          "1": {
+            "dateTime": {
+              "createdAt": 1716129679665,
+              "updatedAt": 1716129679665
+            }
+          }
+        }
+      }
+    },
+    "threadReplyingReplyUsers": {
+      "1": {
+        "1": {
+          "1": {
+            "dateTime": {
+              "createdAt": 1716129782971,
+              "updatedAt": 1716129782971
+            }
+          }
+        }
+      }
+    }
   },
   "favoriteThreads": {
     "threads": {},
     "threadReplies": {},
-    "threadReplyingReplies": {},
+    "threadReplyingReplies": {
+      "1": {}
+    },
     "users": {},
     "threadReplyUsers": {},
-    "threadReplyingReplyUsers": {}
+    "threadReplyingReplyUsers": {
+      "1": {}
+    }
   },
   "watchedThreads": {
-    "users": {}
+    "users": {
+      "1": {},
+      "2": {}
+    }
   },
   "resources": {
     "images": {
       "1": "public/images/yasuo.webp",
-      "2": "public/images/leesin.jpeg"
+      "2": "public/images/leesin.jpeg",
+      "3": "public/images/1716129561088-102598476.webp"
     }
   },
   "activities": {
     "follows": {},
-    "replies": {}
+    "replies": {
+      "1": {
+        "thisUser": [
+          {
+            "type": 1,
+            "replyId": 1
+          }
+        ],
+        "otherUsers": []
+      },
+      "2": {
+        "thisUser": [
+          {
+            "type": 0,
+            "replyId": 1
+          }
+        ],
+        "otherUsers": [
+          {
+            "type": 1,
+            "replyId": 1
+          }
+        ]
+      }
+    }
   }
 }

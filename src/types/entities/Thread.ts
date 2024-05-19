@@ -1,11 +1,12 @@
-import { DateTime } from "./Common";
+import { DateTime, ExistOrNot } from "./Common";
 
 export type ThreadEntity = {
   threads: ThreadEntity_Threads;
-  users: ThreadEntity_Users;
   threadReplies: ThreadEntity_ThreadReplies;
-  threadReplyReplies: ThreadEntity_ThreadReplyingReplies;
+  threadReplyingReplies: ThreadEntity_ThreadReplyingReplies;
+  users: ThreadEntity_Users;
   threadReplyUsers: ThreadEntity_ThreadReplyUsers;
+  threadReplyingReplyUsers: ThreadEntity_ThreadReplyingReplyUsers;
 };
 
 export type ThreadEntity_Thread = {
@@ -17,62 +18,62 @@ export type ThreadEntity_Thread = {
 };
 
 export type ThreadEntity_ThreadImage = {
-  [imageId: number]: true | undefined;
+  [imageId: number]: ExistOrNot<true>;
 };
 
 // ----- Main Thread
-export type ThreadEntity_MainThreadReply = {
-  [threadReplyId: number]: true | undefined;
-};
-
 export type ThreadEntity_MainThread = {
   mainThread: ThreadEntity_Thread;
-  threadReplies: ThreadEntity_MainThreadReply;
+  threadReplies: { [threadReplyId: number]: ExistOrNot<true> };
   images: ThreadEntity_ThreadImage;
 } & DateTime;
 
 export type ThreadEntity_Threads = {
-  [threadId: number]: ThreadEntity_MainThread | undefined;
+  [threadId: number]: ExistOrNot<ThreadEntity_MainThread>;
 };
 
 // ----- Thread Reply
-export type ThreadEntity_ThreadReplyingReply = {
-  [threadReplyingReplyId: number]: true | undefined;
-};
-
 export type ThreadEntity_ThreadReply = {
   threadReply: ThreadEntity_Thread;
-  threadReplyingReplies: ThreadEntity_ThreadReplyingReply;
+  threadReplyingReplies: { [threadReplyingReplyId: number]: ExistOrNot<true> };
   images: ThreadEntity_ThreadImage;
 } & DateTime;
 
 export type ThreadEntity_ThreadReplies = {
-  [threadReplyId: number]: ThreadEntity_ThreadReply | undefined;
+  [threadReplyId: number]: ExistOrNot<ThreadEntity_ThreadReply>;
 };
 
 // ----- Thread Replying Replies
+export type ThreadEntity_ThreadReplyingReply = {
+  threadReplyingReply: ThreadEntity_Thread;
+  images: ThreadEntity_ThreadImage;
+} & DateTime;
+
 export type ThreadEntity_ThreadReplyingReplies = {
-  [threadReplyingReplyId: number]: ThreadEntity_Thread | undefined;
+  [threadReplyingReplyId: number]: ExistOrNot<ThreadEntity_ThreadReplyingReply>;
 };
 
 // ----- User
-export type ThreadEntity_User = {
-  [threadId: number]: DateTime | undefined;
-};
-
 export type ThreadEntity_Users = {
-  [userId: number]: ThreadEntity_User | undefined;
+  [userId: number]: ExistOrNot<{
+    [threadId: number]: ExistOrNot<DateTime>;
+  }>;
 };
 
 // ----- Thread Reply User
-export type ThreadEntity_ThreadReplyMainThread = {
-  [threadReplyId: number]: DateTime | undefined;
-};
-
-export type ThreadEntity_ThreadReplyUser = {
-  [mainThreadId: number]: ThreadEntity_ThreadReplyMainThread | undefined;
-};
-
 export type ThreadEntity_ThreadReplyUsers = {
-  [userId: number]: ThreadEntity_ThreadReplyUser | undefined;
+  [userId: number]: ExistOrNot<{
+    [mainThreadId: number]: ExistOrNot<{
+      [threadReplyId: number]: ExistOrNot<DateTime>;
+    }>;
+  }>;
+};
+
+// ----- Thread Replying Reply User
+export type ThreadEntity_ThreadReplyingReplyUsers = {
+  [userId: number]: ExistOrNot<{
+    [threadReplyId: number]: ExistOrNot<{
+      [threadReplyingReplyId: number]: ExistOrNot<DateTime>;
+    }>;
+  }>;
 };

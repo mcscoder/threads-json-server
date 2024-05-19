@@ -4,6 +4,7 @@ import {
   ThreadEntity_MainThread,
   ThreadEntity_ThreadImage,
   ThreadEntity_ThreadReply,
+  ThreadEntity_ThreadReplyingReply,
 } from "../types/entities";
 import { ThreadPostRequest, ThreadResponse } from "../types/models/thread";
 import { FavoriteResponse } from "../types/models/favorite/Response";
@@ -16,6 +17,7 @@ import {
   UserResponse,
 } from "../types/models/user/Response";
 import { LoginRequest } from "../types/models/user/Request";
+import { ReplyType } from "../types/entities/Activity";
 
 export class Repository {
   db: LowdbSync<DatabaseEntity>; // Type declare for `this.db`
@@ -41,6 +43,7 @@ export class Repository {
     return undefined;
   }
 
+  // 1.2. User login authentication
   userLoginAuthentication(loginRequest: LoginRequest): LoginResponse {
     const userId = this.db.get("usernames").value()[loginRequest.username];
     if (userId) {
@@ -266,7 +269,6 @@ export class Repository {
     const threadReplies = this.db.get("threads").value()["threadReplies"];
     const threadReply = threadReplies[threadReplyId];
     if (threadReply) {
-      // const user = this.db.get("users").value()[threadReply.threadReply.userId];
       const user = this.getUserById(threadReply.threadReply.userId);
 
       if (user) {
@@ -405,10 +407,10 @@ export class Repository {
 
     // Generate new ID for new Thread Reply
     const newThreadReplyId = CommonUtils.generateId(threadReplies);
-    const threadOwnerId = newThreadRequest.userId;
+    const currentUserId = newThreadRequest.userId;
     const { imageIds, ...threadReply } = newThreadRequest;
 
-    // Create images object
+    // Create image object
     const images: ThreadEntity_ThreadImage = {};
     imageIds?.forEach((id) => {
       images[id] = true;
@@ -425,31 +427,33 @@ export class Repository {
       ...CommonUtils.getCurrentDate(),
     };
 
+    const mainThreadId = newThreadReply.threadReply.mainThreadId!;
+    const mainThreadUserId = threads[mainThreadId]!.mainThread.userId;
+
     // Add new data to the object
     threadReplies[newThreadReplyId] = newThreadReply;
 
     // Handle if the user has never replied to any Thread
-    if (!threadReplyUsers[threadOwnerId]) {
-      threadReplyUsers[threadOwnerId] = {};
+    if (!threadReplyUsers[currentUserId]) {
+      threadReplyUsers[currentUserId] = {};
     }
     // Handle if the user has never replied to the current Main Thread
-    if (
-      !threadReplyUsers[threadOwnerId]![
-        newThreadReply.threadReply.mainThreadId!
-      ]
-    ) {
-      threadReplyUsers[threadOwnerId]![
-        newThreadReply.threadReply.mainThreadId!
-      ] = {};
+    if (!threadReplyUsers[currentUserId]![mainThreadId]) {
+      threadReplyUsers[currentUserId]![mainThreadId] = {};
     }
-    threadReplyUsers[threadOwnerId]![newThreadReply.threadReply.mainThreadId!]![
-      newThreadReplyId
-    ] = CommonUtils.getCurrentDate();
+    // Add date for new Thread reply
+    threadReplyUsers[currentUserId]![mainThreadId]![newThreadReplyId] =
+      CommonUtils.getCurrentDate();
 
     // Add new Thread reply ID to main Thread object
-    threads[newThreadReply.threadReply.mainThreadId!]!["threadReplies"][
-      newThreadReply.threadReply.id
-    ] = true;
+    threads[mainThreadId]!["threadReplies"][newThreadReplyId] = true;
+
+    this.setUserReplyActivity(
+      currentUserId,
+      mainThreadUserId,
+      ReplyType.reply,
+      newThreadReplyId
+    );
 
     // Write data to the database (sync to the database)
     this.db.write();
@@ -484,13 +488,19 @@ export class Repository {
   }
 
   // 2.15. Get all Threads by User Id
-  getThreadsByUserId(userId: number): ThreadResponse[] {
+  getThreadsByUserId(
+    profileUserId: number,
+    currentUserId: number
+  ): ThreadResponse[] {
     const threadResponses: ThreadResponse[] = [];
-    const threadIds = this.db.get("threads").value()["users"][userId];
+    const threadIds = this.db.get("threads").value()["users"][profileUserId];
     if (threadIds) {
       const threadIdList = Object.keys(threadIds);
       threadIdList.forEach((threadId) => {
-        const threadResponse = this.getThreadById(Number(threadId), userId)!;
+        const threadResponse = this.getThreadById(
+          Number(threadId),
+          currentUserId
+        )!;
         threadResponses.push(threadResponse);
       });
     }
@@ -499,8 +509,12 @@ export class Repository {
   }
 
   // 2.16. Get Thread Replies by User Id
-  getUserReplies(userId: number, mainThreadId: number): UserReplies {
-    const mainThread = this.getThreadById(mainThreadId, userId)!;
+  getRepliesByUser(
+    profileUserId: number,
+    currentUserId: number,
+    mainThreadId: number
+  ): UserReplies {
+    const mainThread = this.getThreadById(mainThreadId, currentUserId)!;
 
     const userReplies: UserReplies = {
       mainThread: mainThread,
@@ -508,7 +522,7 @@ export class Repository {
     };
 
     const threadReplyIds = this.db.get("threads").value()["threadReplyUsers"][
-      userId
+      profileUserId
     ]![mainThreadId];
 
     if (threadReplyIds) {
@@ -516,7 +530,7 @@ export class Repository {
       replyIdList.forEach((threadReplyId) => {
         const threadReply = this.getThreadReplyById(
           Number(threadReplyId),
-          userId
+          currentUserId
         )!;
         userReplies.threadReplies.push(threadReply);
       });
@@ -529,17 +543,24 @@ export class Repository {
   }
 
   // 2.17. Get all Thread Replies by User Id
-  getAllUserReplies(userId: number): UserRepliesResponse {
+  getAllRepliesByUser(
+    profileUserId: number,
+    currentUserId: number
+  ): UserRepliesResponse {
     const userRepliesResponse: UserRepliesResponse = [];
 
-    const mainThreadIds = this.db.get("threads").value()["threadReplyUsers"][
-      userId
+    const mainThreads = this.db.get("threads").value()["threadReplyUsers"][
+      profileUserId
     ];
 
-    if (mainThreadIds) {
-      const mainThreadIdList = Object.keys(mainThreadIds);
+    if (mainThreads) {
+      const mainThreadIdList = Object.keys(mainThreads);
       mainThreadIdList.forEach((mainThreadId) => {
-        const userReplies = this.getUserReplies(userId, Number(mainThreadId));
+        const userReplies = this.getRepliesByUser(
+          profileUserId,
+          currentUserId,
+          Number(mainThreadId)
+        );
         userRepliesResponse.push(userReplies);
       });
     }
@@ -550,5 +571,249 @@ export class Repository {
         a.threadReplies[0].dateTime.createdAt
     );
     return userRepliesResponse;
+  }
+
+  // 2.18. Post reply to another reply
+  postThreadReplyingReply(newThreadRequest: ThreadPostRequest): boolean {
+    // Get data from database for sync later
+    const threadReplies = this.db.get("threads").value()["threadReplies"];
+    const threadReplyingReplies = this.db.get("threads").value()[
+      "threadReplyingReplies"
+    ];
+    const threadReplyingReplyUsers = this.db.get("threads").value()[
+      "threadReplyingReplyUsers"
+    ];
+
+    // Generate new ID for new Thread Replying Reply
+    const newThreadReplyingReplyId = CommonUtils.generateId(
+      threadReplyingReplies
+    );
+    const currentUserId = newThreadRequest.userId;
+    const { imageIds, ...threadReplyingReply } = newThreadRequest;
+
+    // Create image object
+    const images: ThreadEntity_ThreadImage = {};
+    imageIds?.forEach((id) => {
+      images[id] = true;
+    });
+
+    // New Thread Replying Reply object
+    const newThreadReplyingReply: ThreadEntity_ThreadReplyingReply = {
+      threadReplyingReply: {
+        id: newThreadReplyingReplyId,
+        ...threadReplyingReply,
+      },
+      images: images,
+      ...CommonUtils.getCurrentDate(),
+    };
+
+    const threadReplyId =
+      newThreadReplyingReply.threadReplyingReply.threadReplyId!;
+    const threadReplyUserId = threadReplies[threadReplyId]!.threadReply.userId;
+
+    // Add new data to the object
+    threadReplyingReplies[newThreadReplyingReplyId] = newThreadReplyingReply;
+
+    // Handle if the user has never replied to any Thread's reply
+    if (!threadReplyingReplyUsers[currentUserId]) {
+      threadReplyingReplyUsers[currentUserId] = {};
+    }
+    // Handle if the user has never replied to the current Thread's reply
+    if (!threadReplyingReplyUsers[currentUserId]![threadReplyId]) {
+      threadReplyingReplyUsers[currentUserId]![threadReplyId] = {};
+    }
+    // Add date for new Thread replying reply
+    threadReplyingReplyUsers[currentUserId]![threadReplyId]![
+      newThreadReplyingReplyId
+    ] = CommonUtils.getCurrentDate();
+
+    // Add new Thread replying reply ID to the Thread Reply object
+    threadReplies[threadReplyId]!["threadReplyingReplies"][
+      newThreadReplyingReplyId
+    ] = true;
+
+    this.setUserReplyActivity(
+      currentUserId,
+      threadReplyUserId,
+      ReplyType.replyingReply,
+      newThreadReplyingReplyId
+    );
+
+    // Write data to the database (sync to the database)
+    this.db.write();
+
+    return true;
+  }
+
+  // 2.19. Get Thread Replying Reply favorite status
+  getThreadReplyingReplyFavoriteStatus(
+    threadReplyingReplyId: number,
+    userId: number
+  ): FavoriteResponse {
+    // Get list of userId who favorited the Thread Replying Reply with id = threadReplyingReplyId
+    const userIds = this.db.get("favoriteThreads").value()[
+      "threadReplyingReplyUsers"
+    ][threadReplyingReplyId];
+
+    // Get number of favorite by number of keys
+    const favoriteCount = userIds ? Object.keys(userIds).length : 0;
+    // If one of the keys === userId that means this Thread has been favorited by user
+    const isFavorite = userIds ? userIds[userId] || false : false;
+
+    return {
+      favoriteCount,
+      isFavorite,
+    };
+  }
+
+  // 2.20. Get Thread Replying Reply
+  getThreadReplyingReplyById(
+    threadReplyingReplyId: number,
+    userId: number
+  ): ThreadResponse | undefined {
+    const threadReplyingReply = this.db.get("threads").value()[
+      "threadReplyingReplies"
+    ][threadReplyingReplyId];
+    const requestedUser = this.getUserById(userId);
+    if (threadReplyingReply && requestedUser) {
+      const user = this.getUserById(
+        threadReplyingReply.threadReplyingReply.userId
+      )!;
+      const imageURLs = this.getImageURLs(
+        ...Object.keys(threadReplyingReply.images)
+      );
+      const favorite = this.getThreadReplyingReplyFavoriteStatus(
+        threadReplyingReplyId,
+        userId
+      );
+      const dateTime = threadReplyingReply.dateTime;
+      return {
+        content: threadReplyingReply.threadReplyingReply,
+        user: user,
+        favorite: favorite,
+        imageURLs: imageURLs,
+        dateTime: dateTime,
+        replyCount: undefined,
+      };
+    }
+    return undefined;
+  }
+
+  // 2.21. Mark favorite a Thread Replying Reply
+  favoriteThreadReplyingReply(
+    threadReplyingReplyId: number,
+    userId: number,
+    isFavorite: boolean
+  ): boolean {
+    const threadReplyingReply = this.getThreadReplyingReplyById(
+      threadReplyingReplyId,
+      userId
+    );
+
+    // Check existing, pass if Thread reply and user existing
+    if (!threadReplyingReply) {
+      return false;
+    }
+
+    const favoriteThreadReplyingReplies = this.db
+      .get("favoriteThreads")
+      .value()["threadReplyingReplies"];
+
+    const favoriteThreadReplyingReplyUsers = this.db
+      .get("favoriteThreads")
+      .value()["threadReplyingReplyUsers"];
+
+    // Handle if Thread Replying Reply has no favorites
+    if (!favoriteThreadReplyingReplies[threadReplyingReplyId]) {
+      favoriteThreadReplyingReplies[threadReplyingReplyId] = {};
+    }
+    // Handle if User has never favorite a Thread Replying Reply yet
+    if (!favoriteThreadReplyingReplyUsers[userId]) {
+      favoriteThreadReplyingReplyUsers[userId] = {};
+    }
+
+    // Handle favorite of unfavorite
+    if (isFavorite) {
+      // Favorite
+      favoriteThreadReplyingReplies[threadReplyingReplyId]![userId] = true;
+      favoriteThreadReplyingReplyUsers[userId]![threadReplyingReplyId] = true;
+    } else {
+      // Unfavorite
+      delete favoriteThreadReplyingReplies[threadReplyingReplyId]![userId];
+      delete favoriteThreadReplyingReplyUsers[userId]![threadReplyingReplyId];
+    }
+
+    // Sync to the database
+    this.db.write();
+
+    // Final operation
+    return true;
+  }
+
+  // 2.22. Get Thread Replying Replies
+  getThreadReplyingReplies(
+    threadReplyId: number,
+    currentUserId: number
+  ): ThreadResponse[] | undefined {
+    const threadReply = this.db.get("threads").value()["threadReplies"][
+      threadReplyId
+    ];
+    if (threadReply) {
+      const threadResponses: ThreadResponse[] = [];
+
+      const threadReplyingReplyIdList = Object.keys(
+        threadReply["threadReplyingReplies"]
+      );
+      threadReplyingReplyIdList.forEach((threadReplyingReplyId) => {
+        const threadResponse = this.getThreadReplyingReplyById(
+          Number(threadReplyingReplyId),
+          currentUserId
+        )!;
+        threadResponses.push(threadResponse);
+      });
+      return threadResponses;
+    }
+
+    return undefined;
+  }
+
+  // 3.1. Replies Activity
+  setUserReplyActivity(
+    currentUserId: number,
+    replyToUserId: number,
+    type: ReplyType,
+    replyId: number
+  ): void {
+    const replies = this.db.get("activities").value()["replies"];
+
+    // Handle if reply activity of user is empty
+    if (!replies[currentUserId]) {
+      replies[currentUserId] = {
+        thisUser: [],
+        otherUsers: [],
+      };
+    }
+    if (!replies[replyToUserId]) {
+      replies[replyToUserId] = {
+        thisUser: [],
+        otherUsers: [],
+      };
+    }
+
+    const thisUser = replies[currentUserId]!.thisUser;
+    thisUser.push({
+      type,
+      replyId,
+    });
+
+    if (currentUserId !== replyToUserId) {
+      const otherUsers = replies[replyToUserId]!.otherUsers;
+      otherUsers.push({
+        type,
+        replyId,
+      });
+    }
+
+    this.db.write();
   }
 }
