@@ -18,6 +18,7 @@ import {
 } from "../types/models/user/Response";
 import { LoginRequest } from "../types/models/user/Request";
 import { ReplyType } from "../types/entities/Activity";
+import { ReplyActivityResponse } from "../types/models/activity/Response";
 
 export class Repository {
   db: LowdbSync<DatabaseEntity>; // Type declare for `this.db`
@@ -451,7 +452,7 @@ export class Repository {
     this.setUserReplyActivity(
       currentUserId,
       mainThreadUserId,
-      ReplyType.reply,
+      ReplyType.REPLY,
       newThreadReplyId
     );
 
@@ -635,7 +636,7 @@ export class Repository {
     this.setUserReplyActivity(
       currentUserId,
       threadReplyUserId,
-      ReplyType.replyingReply,
+      ReplyType.REPLYING_REPLY,
       newThreadReplyingReplyId
     );
 
@@ -815,5 +816,48 @@ export class Repository {
     }
 
     this.db.write();
+  }
+
+  // 3.2. Get replies activity
+  getRepliesActivity(
+    currentUserId: number
+  ): ReplyActivityResponse[] | undefined {
+    const replies = this.db.get("activities").value()["replies"];
+    const currentUser = replies[currentUserId];
+
+    // Check if there is any reply activities
+    if (!currentUser) {
+      return undefined;
+    }
+
+    const replyResponses: ReplyActivityResponse[] = [];
+    const otherUserReplies = currentUser["otherUsers"];
+
+    otherUserReplies.toReversed().forEach(({ type, replyId }) => {
+      let response: ReplyActivityResponse;
+      switch (type) {
+        case ReplyType.REPLY:
+          response = {
+            reply: this.getThreadReplyById(replyId, currentUserId)!,
+            type: type,
+          };
+          break;
+        case ReplyType.REPLYING_REPLY:
+          response = {
+            reply: this.getThreadReplyingReplyById(replyId, currentUserId)!,
+            type: type,
+          };
+          break;
+        default:
+          break;
+      }
+      replyResponses.push(response!);
+    });
+
+    if (replyResponses) {
+      return replyResponses;
+    }
+
+    return undefined;
   }
 }

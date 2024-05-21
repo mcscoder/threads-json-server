@@ -213,4 +213,13 @@ export function apiService(server: Application, db: Repository) {
       }
     }
   );
+
+  server.get("/api/activity/replies", (req, res) => {
+    const currentUserId = req.get("userId");
+    const replies = db.getRepliesActivity(Number(currentUserId));
+
+    if (replies) {
+      res.json(replies);
+    }
+  });
 }

@@ -12,8 +12,8 @@ export type ActivityEntity_Follows = {
 };
 
 export enum ReplyType {
-  reply,
-  replyingReply,
+  REPLY,
+  REPLYING_REPLY,
 }
 
 export type ActivityEntity_Reply_User = {

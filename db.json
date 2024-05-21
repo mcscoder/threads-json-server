@@ -29,7 +29,9 @@
           "text": "ok",
           "userId": 2
         },
-        "threadReplies": {},
+        "threadReplies": {
+          "6": true
+        },
         "images": {},
         "dateTime": {
           "createdAt": 1716129537235,
@@ -43,7 +45,8 @@
           "userId": 2
         },
         "threadReplies": {
-          "1": true
+          "1": true,
+          "5": true
         },
         "images": {
           "3": true
@@ -51,6 +54,38 @@
         "dateTime": {
           "createdAt": 1716129561327,
           "updatedAt": 1716129561327
+        }
+      },
+      "3": {
+        "mainThread": {
+          "id": 3,
+          "text": "ivuucycy",
+          "userId": 2
+        },
+        "threadReplies": {},
+        "images": {},
+        "dateTime": {
+          "createdAt": 1716133314299,
+          "updatedAt": 1716133314299
+        }
+      },
+      "4": {
+        "mainThread": {
+          "id": 4,
+          "text": "b5gv",
+          "userId": 2
+        },
+        "threadReplies": {
+          "2": true,
+          "3": true,
+          "4": true
+        },
+        "images": {
+          "4": true
+        },
+        "dateTime": {
+          "createdAt": 1716134853096,
+          "updatedAt": 1716134853096
         }
       }
     },
@@ -70,6 +105,82 @@
           "createdAt": 1716129679665,
           "updatedAt": 1716129679665
         }
+      },
+      "2": {
+        "threadReply": {
+          "id": 2,
+          "mainThreadId": 4,
+          "text": "hhh",
+          "userId": 2
+        },
+        "threadReplyingReplies": {},
+        "images": {
+          "5": true
+        },
+        "dateTime": {
+          "createdAt": 1716135272118,
+          "updatedAt": 1716135272118
+        }
+      },
+      "3": {
+        "threadReply": {
+          "id": 3,
+          "mainThreadId": 4,
+          "text": "hhh",
+          "userId": 2
+        },
+        "threadReplyingReplies": {},
+        "images": {
+          "6": true
+        },
+        "dateTime": {
+          "createdAt": 1716135272672,
+          "updatedAt": 1716135272672
+        }
+      },
+      "4": {
+        "threadReply": {
+          "id": 4,
+          "mainThreadId": 4,
+          "text": "ok",
+          "userId": 2
+        },
+        "threadReplyingReplies": {},
+        "images": {},
+        "dateTime": {
+          "createdAt": 1716136808096,
+          "updatedAt": 1716136808096
+        }
+      },
+      "5": {
+        "threadReply": {
+          "id": 5,
+          "mainThreadId": 2,
+          "text": "haha",
+          "userId": 1
+        },
+        "threadReplyingReplies": {
+          "2": true
+        },
+        "images": {},
+        "dateTime": {
+          "createdAt": 1716194694248,
+          "updatedAt": 1716194694248
+        }
+      },
+      "6": {
+        "threadReply": {
+          "id": 6,
+          "mainThreadId": 1,
+          "text": "ok cc",
+          "userId": 1
+        },
+        "threadReplyingReplies": {},
+        "images": {},
+        "dateTime": {
+          "createdAt": 1716223662925,
+          "updatedAt": 1716223662925
+        }
       }
     },
     "threadReplyingReplies": {
@@ -84,6 +195,19 @@
         "dateTime": {
           "createdAt": 1716129782971,
           "updatedAt": 1716129782971
+        }
+      },
+      "2": {
+        "threadReplyingReply": {
+          "id": 2,
+          "text": "cc",
+          "threadReplyId": 5,
+          "userId": 2
+        },
+        "images": {},
+        "dateTime": {
+          "createdAt": 1716194772840,
+          "updatedAt": 1716194772840
         }
       }
     },
@@ -100,16 +224,66 @@
             "createdAt": 1716129561327,
             "updatedAt": 1716129561327
           }
+        },
+        "3": {
+          "dateTime": {
+            "createdAt": 1716133314299,
+            "updatedAt": 1716133314299
+          }
+        },
+        "4": {
+          "dateTime": {
+            "createdAt": 1716134853096,
+            "updatedAt": 1716134853096
+          }
         }
       }
     },
     "threadReplyUsers": {
+      "1": {
+        "1": {
+          "6": {
+            "dateTime": {
+              "createdAt": 1716223662925,
+              "updatedAt": 1716223662925
+            }
+          }
+        },
+        "2": {
+          "5": {
+            "dateTime": {
+              "createdAt": 1716194694248,
+              "updatedAt": 1716194694248
+            }
+          }
+        }
+      },
       "2": {
         "2": {
           "1": {
             "dateTime": {
               "createdAt": 1716129679665,
               "updatedAt": 1716129679665
+            }
+          }
+        },
+        "4": {
+          "2": {
+            "dateTime": {
+              "createdAt": 1716135272118,
+              "updatedAt": 1716135272118
+            }
+          },
+          "3": {
+            "dateTime": {
+              "createdAt": 1716135272672,
+              "updatedAt": 1716135272672
+            }
+          },
+          "4": {
+            "dateTime": {
+              "createdAt": 1716136808096,
+              "updatedAt": 1716136808096
             }
           }
         }
@@ -125,16 +299,34 @@
             }
           }
         }
+      },
+      "2": {
+        "5": {
+          "2": {
+            "dateTime": {
+              "createdAt": 1716194772840,
+              "updatedAt": 1716194772840
+            }
+          }
+        }
       }
     }
   },
   "favoriteThreads": {
-    "threads": {},
+    "threads": {
+      "1": {
+        "2": true
+      }
+    },
     "threadReplies": {},
     "threadReplyingReplies": {
       "1": {}
     },
-    "users": {},
+    "users": {
+      "2": {
+        "1": true
+      }
+    },
     "threadReplyUsers": {},
     "threadReplyingReplyUsers": {
       "1": {}
@@ -150,7 +342,10 @@
     "images": {
       "1": "public/images/yasuo.webp",
       "2": "public/images/leesin.jpeg",
-      "3": "public/images/1716129561088-102598476.webp"
+      "3": "public/images/1716129561088-102598476.webp",
+      "4": "public/images/1716134853035-199424991.webp",
+      "5": "public/images/1716135272084-25738168.webp",
+      "6": "public/images/1716135272655-25738168.webp"
     }
   },
   "activities": {
@@ -161,21 +356,58 @@
           {
             "type": 1,
             "replyId": 1
+          },
+          {
+            "type": 0,
+            "replyId": 5
+          },
+          {
+            "type": 0,
+            "replyId": 6
           }
         ],
-        "otherUsers": []
+        "otherUsers": [
+          {
+            "type": 1,
+            "replyId": 2
+          }
+        ]
       },
       "2": {
         "thisUser": [
           {
             "type": 0,
             "replyId": 1
+          },
+          {
+            "type": 0,
+            "replyId": 2
+          },
+          {
+            "type": 0,
+            "replyId": 3
+          },
+          {
+            "type": 0,
+            "replyId": 4
+          },
+          {
+            "type": 1,
+            "replyId": 2
           }
         ],
         "otherUsers": [
           {
+            "type": 0,
+            "replyId": 5
+          },
+          {
             "type": 1,
             "replyId": 1
+          },
+          {
+            "type": 0,
+            "replyId": 6
           }
         ]
       }
