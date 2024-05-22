@@ -31,8 +31,9 @@ export function apiService(server: Application, db: Repository) {
 
   // 1.1. Get a user by userId
   server.get("/api/user", (req, res) => {
-    const userId = req.get("userId");
-    res.json(db.getUserById(Number(userId)));
+    const otherUserId = req.get("otherUserId");
+    const currentUserId = req.get("userId");
+    res.json(db.getUserById(Number(otherUserId), Number(currentUserId)));
   });
 
   // 1.2. User Login authentication
@@ -214,12 +215,63 @@ export function apiService(server: Application, db: Repository) {
     }
   );
 
+  // 3.1. Get reply activities
   server.get("/api/activity/replies", (req, res) => {
-    const currentUserId = req.get("userId");
-    const replies = db.getRepliesActivity(Number(currentUserId));
+    const currentUserId = req.get("currentUserId");
+    const replies = db.getReplyActivities(Number(currentUserId));
 
     if (replies) {
       res.json(replies);
     }
+  });
+
+  // 3.2. Get follow activities
+  server.get("/api/activity/follows", (req, res) => {
+    const currentUserId = req.get("currentUserId");
+    const replies = db.getFollowActivities(Number(currentUserId));
+
+    if (replies) {
+      res.json(replies);
+    }
+  });
+
+  // 4.1. Current user follow another user
+  server.get("/api/follow", (req, res) => {
+    const currentUserId = req.get("currentUserId");
+    const targetUserId = req.get("targetUserId");
+
+    const success = db.followUser(Number(currentUserId), Number(targetUserId));
+
+    if (success) {
+      res.json(CommonUtils.responseMessage("That works"));
+    } else {
+      res.status(404).json(CommonUtils.responseMessage("User does not exist"));
+    }
+  });
+
+  // 4.2. Get user followings of user
+  server.get("/api/followings", (req, res) => {
+    const currentUserId = req.get("userId");
+    const targetUserId = req.get("targetUserId");
+
+    const response = db.getFollowingUsers(
+      Number(currentUserId),
+      Number(targetUserId)
+    );
+
+    res.json(response);
+  });
+
+  // 4.3. Get followers of user
+  server.get("/api/followers", (req, res) => {
+    const currentUserId = req.get("userId");
+    const targetUserId = req.get("targetUserId");
+
+    const response = db.getFollowerUsers(
+      Number(currentUserId),
+      Number(targetUserId)
+    );
+
+    res.json(response);
   });
 }

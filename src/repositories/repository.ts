@@ -19,6 +19,7 @@ import {
 import { LoginRequest } from "../types/models/user/Request";
 import { ReplyType } from "../types/entities/Activity";
 import { ReplyActivityResponse } from "../types/models/activity/Response";
+import { FollowActivityResponse } from "../types/models/follow/Response";
 
 export class Repository {
   db: LowdbSync<DatabaseEntity>; // Type declare for `this.db`
@@ -27,17 +28,32 @@ export class Repository {
   }
 
   // 1.1. Get user by userId
-  getUserById(userId: number): UserResponse | undefined {
-    const user = this.db.get("users").value()[userId];
+  getUserById(
+    targetUserId: number,
+    currentUserId: number
+  ): UserResponse | undefined {
+    const user = this.db.get("users").value()[targetUserId];
     if (user) {
       const images = this.db.get("resources").value()["images"];
       const avatarURL = images[user.imageId]!;
+      const followingStatus = this.getFollowingStatus(
+        currentUserId,
+        targetUserId
+      );
+      const followers = this.db.get("follows").value()["followers"]?.[
+        targetUserId
+      ];
+      const followerCount: number = followers
+        ? Object.keys(followers).length
+        : 0;
       const userResponse: UserResponse = {
         id: user.id,
         username: user.username,
         firstName: user.firstName,
         lastName: user.lastName,
         avatarURL: avatarURL,
+        following: followingStatus,
+        followers: followerCount,
       };
       return userResponse;
     }
@@ -51,7 +67,7 @@ export class Repository {
       const password = this.db.get("users").value()[userId]?.password;
       if (loginRequest.password === password) {
         return {
-          user: this.getUserById(userId),
+          user: this.getUserById(userId, userId),
           message: undefined,
         };
       }
@@ -63,7 +79,10 @@ export class Repository {
   }
 
   // 2.1. Get a Thread by threadId
-  getThreadById(threadId: number, userId: number): ThreadResponse | undefined {
+  getThreadById(
+    threadId: number,
+    currentUserId: number
+  ): ThreadResponse | undefined {
     const thread = this.db.get("threads").value()["threads"][threadId];
 
     if (thread) {
@@ -72,8 +91,8 @@ export class Repository {
 
       return {
         content: thread.mainThread,
-        user: this.getUserById(thread.mainThread.userId)!, // Thread owner
-        favorite: this.getThreadFavoriteStatus(threadId, userId),
+        user: this.getUserById(thread.mainThread.userId, currentUserId)!, // Thread owner
+        favorite: this.getThreadFavoriteStatus(threadId, currentUserId),
         replyCount: replyCount,
         imageURLs: imageURLs,
         dateTime: {
@@ -265,12 +284,15 @@ export class Repository {
   // 2.7. Get a Thread reply
   getThreadReplyById(
     threadReplyId: number,
-    userId: number
+    currentUserId: number
   ): ThreadResponse | undefined {
     const threadReplies = this.db.get("threads").value()["threadReplies"];
     const threadReply = threadReplies[threadReplyId];
     if (threadReply) {
-      const user = this.getUserById(threadReply.threadReply.userId);
+      const user = this.getUserById(
+        threadReply.threadReply.userId,
+        currentUserId
+      );
 
       if (user) {
         const replyCount = Object.keys(
@@ -280,7 +302,10 @@ export class Repository {
         return {
           content: threadReply.threadReply,
           user: user,
-          favorite: this.getThreadReplyFavoriteStatus(threadReplyId, userId),
+          favorite: this.getThreadReplyFavoriteStatus(
+            threadReplyId,
+            currentUserId
+          ),
           replyCount: replyCount,
           imageURLs: imageURLs,
           dateTime: {
@@ -670,22 +695,23 @@ export class Repository {
   // 2.20. Get Thread Replying Reply
   getThreadReplyingReplyById(
     threadReplyingReplyId: number,
-    userId: number
+    currentUserId: number
   ): ThreadResponse | undefined {
     const threadReplyingReply = this.db.get("threads").value()[
       "threadReplyingReplies"
     ][threadReplyingReplyId];
-    const requestedUser = this.getUserById(userId);
+    const requestedUser = this.getUserById(currentUserId, currentUserId);
     if (threadReplyingReply && requestedUser) {
       const user = this.getUserById(
-        threadReplyingReply.threadReplyingReply.userId
+        threadReplyingReply.threadReplyingReply.userId,
+        currentUserId
       )!;
       const imageURLs = this.getImageURLs(
         ...Object.keys(threadReplyingReply.images)
       );
       const favorite = this.getThreadReplyingReplyFavoriteStatus(
         threadReplyingReplyId,
-        userId
+        currentUserId
       );
       const dateTime = threadReplyingReply.dateTime;
       return {
@@ -818,19 +844,17 @@ export class Repository {
     this.db.write();
   }
 
-  // 3.2. Get replies activity
-  getRepliesActivity(
-    currentUserId: number
-  ): ReplyActivityResponse[] | undefined {
+  // 3.2. Get reply activities
+  getReplyActivities(currentUserId: number): ReplyActivityResponse[] {
+    const replyResponses: ReplyActivityResponse[] = [];
     const replies = this.db.get("activities").value()["replies"];
     const currentUser = replies[currentUserId];
 
     // Check if there is any reply activities
     if (!currentUser) {
-      return undefined;
+      return replyResponses;
     }
 
-    const replyResponses: ReplyActivityResponse[] = [];
     const otherUserReplies = currentUser["otherUsers"];
 
     otherUserReplies.toReversed().forEach(({ type, replyId }) => {
@@ -854,10 +878,164 @@ export class Repository {
       replyResponses.push(response!);
     });
 
-    if (replyResponses) {
-      return replyResponses;
+    return replyResponses;
+  }
+
+  // 3.3. Get follow activities
+  getFollowActivities(currentUserId: number): FollowActivityResponse[] {
+    const followActivityResponses: FollowActivityResponse[] = [];
+
+    const followerUserId = this.db.get("follows").value().followers[
+      currentUserId
+    ];
+
+    if (followerUserId) {
+      const followerUserIdList = Object.keys(followerUserId);
+
+      followerUserIdList.forEach((userId) => {
+        const userResponse = this.getUserById(Number(userId), currentUserId)!;
+        followActivityResponses.push({
+          user: userResponse,
+          ...followerUserId[Number(userId)]!,
+        });
+      });
     }
 
-    return undefined;
+    // sort by newest first
+    followActivityResponses.sort(
+      (a, b) => b.dateTime.createdAt - a.dateTime.createdAt
+    );
+
+    return followActivityResponses;
+  }
+
+  // 4.1. Current user follow another user
+  followUser(currentUserId: number, targetUserId: number): boolean {
+    // Idea:
+    // The current user will add an user to their following list
+    // The followed user(other user) will add a follower to their follower list
+
+    // Check if both users are exist
+    if (
+      !this.getUserById(currentUserId, currentUserId) ||
+      !this.getUserById(targetUserId, currentUserId)
+    ) {
+      return false;
+    }
+
+    const follows = this.db.get("follows").value();
+
+    const followings = follows.followings;
+    const followers = follows.followers;
+
+    // Handle if it doesn't exist yet
+    if (!followings[currentUserId]) {
+      followings[currentUserId] = {};
+    }
+    if (!followers[targetUserId]) {
+      followers[targetUserId] = {};
+    }
+
+    const currentUser = followings[currentUserId]!;
+    const followedUser = followers[targetUserId]!;
+    // Handle unfollow or follow
+    // Idea:
+    // If the target user id is already existing in following list of the current user
+    // That means this request is unfollow
+    // Otherwise if that is an undefined value
+    // That means this request is follow
+    if (currentUser[targetUserId]) {
+      // Unfollow by deleting the key out of object
+      // Delete the target user id in following list of current user
+      delete currentUser[targetUserId];
+      // Delete the current user id in follower list of target user
+      delete followedUser[currentUserId];
+
+      // Sync to the database
+      this.db.write();
+
+      // Break the function by an early returning
+      return true;
+    }
+
+    const currentDate = CommonUtils.getCurrentDate();
+
+    // Add followed User Id to current user's following list
+    currentUser[targetUserId] = currentDate;
+
+    // Add current User Id to followed user's followers list
+    followedUser[currentUserId] = currentDate;
+
+    this.db.write();
+
+    return true;
+  }
+
+  // 4.2. Get followings of user
+  getFollowingUsers(
+    currentUserId: number,
+    targetUserId: number
+  ): UserResponse[] {
+    const userResponses: UserResponse[] = [];
+
+    const followings = this.db.get("follows").value().followings;
+
+    const followingUserIds = followings[targetUserId];
+
+    if (!followingUserIds) {
+      return userResponses;
+    }
+
+    const followingUserIdList = Object.keys(followingUserIds);
+    followingUserIdList.forEach((otherUserId) => {
+      const userResponse = this.getUserById(
+        Number(otherUserId),
+        currentUserId
+      )!;
+      console.log(userResponse);
+      userResponses.push(userResponse);
+    });
+
+    return userResponses;
+  }
+
+  // 4.3. Get following status
+  getFollowingStatus(currentUserId: number, otherUserId: number): boolean {
+    // Idea:
+    // Check the following list of current user
+    // If there is a user Id match to the otherUserId
+    // That means other user is following by current user
+    // Otherwise that other user is not following by current user
+    const followings = this.db.get("follows").value().followings;
+    const currentUser = followings[currentUserId];
+    return Boolean(currentUser?.[otherUserId]);
+  }
+
+  // 4.4. Get followers of user
+  getFollowerUsers(
+    currentUserId: number,
+    targetUserId: number
+  ): UserResponse[] {
+    const userResponses: UserResponse[] = [];
+
+    const followers = this.db.get("follows").value().followers;
+
+    const followerUserIds = followers[targetUserId];
+
+    if (!followerUserIds) {
+      return userResponses;
+    }
+
+    const followerUserIdList = Object.keys(followers);
+    followerUserIdList.forEach((otherUserId) => {
+      const userResponse = this.getUserById(
+        Number(otherUserId),
+        currentUserId
+      )!;
+
+      userResponses.push(userResponse);
+    });
+
+    return userResponses;
   }
 }

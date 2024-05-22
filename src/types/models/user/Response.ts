@@ -6,6 +6,8 @@ export type UserResponse = Pick<
   "id" | "username" | "firstName" | "lastName"
 > & {
   avatarURL: string;
+  following: boolean;
+  followers: number;
 };
 
 export type UserReplies = {

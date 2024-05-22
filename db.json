@@ -1,7 +1,8 @@
 {
   "usernames": {
     "yasuo": 1,
-    "leesin": 2
+    "leesin": 2,
+    "masteryi": 3
   },
   "users": {
     "1": {
@@ -19,6 +20,14 @@
       "lastName": "sin",
       "password": "1",
       "imageId": 2
+    },
+    "3": {
+      "id": 3,
+      "username": "masteryi",
+      "firstName": "master",
+      "lastName": "yi",
+      "password": "1",
+      "imageId": 3
     }
   },
   "threads": {
@@ -30,7 +39,10 @@
           "userId": 2
         },
         "threadReplies": {
-          "6": true
+          "6": true,
+          "8": true,
+          "9": true,
+          "10": true
         },
         "images": {},
         "dateTime": {
@@ -46,7 +58,8 @@
         },
         "threadReplies": {
           "1": true,
-          "5": true
+          "5": true,
+          "7": true
         },
         "images": {
           "3": true
@@ -175,11 +188,71 @@
           "text": "ok cc",
           "userId": 1
         },
-        "threadReplyingReplies": {},
+        "threadReplyingReplies": {
+          "3": true
+        },
         "images": {},
         "dateTime": {
           "createdAt": 1716223662925,
           "updatedAt": 1716223662925
+        }
+      },
+      "7": {
+        "threadReply": {
+          "id": 7,
+          "mainThreadId": 2,
+          "text": "uay anh nay depp trai nho",
+          "userId": 1
+        },
+        "threadReplyingReplies": {},
+        "images": {},
+        "dateTime": {
+          "createdAt": 1716341002929,
+          "updatedAt": 1716341002929
+        }
+      },
+      "8": {
+        "threadReply": {
+          "id": 8,
+          "mainThreadId": 1,
+          "text": "heveuev",
+          "userId": 1
+        },
+        "threadReplyingReplies": {},
+        "images": {},
+        "dateTime": {
+          "createdAt": 1716374937379,
+          "updatedAt": 1716374937379
+        }
+      },
+      "9": {
+        "threadReply": {
+          "id": 9,
+          "mainThreadId": 1,
+          "text": "iebeuwbwuu17",
+          "userId": 1
+        },
+        "threadReplyingReplies": {},
+        "images": {},
+        "dateTime": {
+          "createdAt": 1716374943215,
+          "updatedAt": 1716374943215
+        }
+      },
+      "10": {
+        "threadReply": {
+          "id": 10,
+          "mainThreadId": 1,
+          "text": "jdowbeueb",
+          "userId": 1
+        },
+        "threadReplyingReplies": {},
+        "images": {
+          "7": true
+        },
+        "dateTime": {
+          "createdAt": 1716374954620,
+          "updatedAt": 1716374954620
         }
       }
     },
@@ -208,6 +281,19 @@
         "dateTime": {
           "createdAt": 1716194772840,
           "updatedAt": 1716194772840
+        }
+      },
+      "3": {
+        "threadReplyingReply": {
+          "id": 3,
+          "text": "habeidbeb",
+          "threadReplyId": 6,
+          "userId": 1
+        },
+        "images": {},
+        "dateTime": {
+          "createdAt": 1716374927244,
+          "updatedAt": 1716374927244
         }
       }
     },
@@ -247,6 +333,24 @@
               "createdAt": 1716223662925,
               "updatedAt": 1716223662925
             }
+          },
+          "8": {
+            "dateTime": {
+              "createdAt": 1716374937379,
+              "updatedAt": 1716374937379
+            }
+          },
+          "9": {
+            "dateTime": {
+              "createdAt": 1716374943215,
+              "updatedAt": 1716374943215
+            }
+          },
+          "10": {
+            "dateTime": {
+              "createdAt": 1716374954620,
+              "updatedAt": 1716374954620
+            }
           }
         },
         "2": {
@@ -254,6 +358,12 @@
             "dateTime": {
               "createdAt": 1716194694248,
               "updatedAt": 1716194694248
+            }
+          },
+          "7": {
+            "dateTime": {
+              "createdAt": 1716341002929,
+              "updatedAt": 1716341002929
             }
           }
         }
@@ -298,6 +408,14 @@
               "updatedAt": 1716129782971
             }
           }
+        },
+        "6": {
+          "3": {
+            "dateTime": {
+              "createdAt": 1716374927245,
+              "updatedAt": 1716374927245
+            }
+          }
         }
       },
       "2": {
@@ -316,7 +434,12 @@
     "threads": {
       "1": {
         "2": true
-      }
+      },
+      "2": {
+        "2": true
+      },
+      "3": {},
+      "4": {}
     },
     "threadReplies": {},
     "threadReplyingReplies": {
@@ -324,7 +447,8 @@
     },
     "users": {
       "2": {
-        "1": true
+        "1": true,
+        "2": true
       }
     },
     "threadReplyUsers": {},
@@ -335,7 +459,8 @@
   "watchedThreads": {
     "users": {
       "1": {},
-      "2": {}
+      "2": {},
+      "3": {}
     }
   },
   "resources": {
@@ -345,7 +470,8 @@
       "3": "public/images/1716129561088-102598476.webp",
       "4": "public/images/1716134853035-199424991.webp",
       "5": "public/images/1716135272084-25738168.webp",
-      "6": "public/images/1716135272655-25738168.webp"
+      "6": "public/images/1716135272655-25738168.webp",
+      "7": "public/images/1716374954575-173213878.webp"
     }
   },
   "activities": {
@@ -364,6 +490,26 @@
           {
             "type": 0,
             "replyId": 6
+          },
+          {
+            "type": 0,
+            "replyId": 7
+          },
+          {
+            "type": 1,
+            "replyId": 3
+          },
+          {
+            "type": 0,
+            "replyId": 8
+          },
+          {
+            "type": 0,
+            "replyId": 9
+          },
+          {
+            "type": 0,
+            "replyId": 10
           }
         ],
         "otherUsers": [
@@ -408,8 +554,90 @@
           {
             "type": 0,
             "replyId": 6
+          },
+          {
+            "type": 0,
+            "replyId": 7
+          },
+          {
+            "type": 0,
+            "replyId": 8
+          },
+          {
+            "type": 0,
+            "replyId": 9
+          },
+          {
+            "type": 0,
+            "replyId": 10
           }
         ]
+      }
+    }
+  },
+  "follows": {
+    "followings": {
+      "1": {
+        "2": {
+          "dateTime": {
+            "createdAt": 1716309357935,
+            "updatedAt": 1716309357935
+          }
+        }
+      },
+      "2": {
+        "1": {
+          "dateTime": {
+            "createdAt": 1716393637016,
+            "updatedAt": 1716393637016
+          }
+        },
+        "3": {
+          "dateTime": {
+            "createdAt": 1716393634620,
+            "updatedAt": 1716393634620
+          }
+        }
+      },
+      "3": {
+        "2": {
+          "dateTime": {
+            "createdAt": 1716390383784,
+            "updatedAt": 1716390383784
+          }
+        }
+      }
+    },
+    "followers": {
+      "1": {
+        "2": {
+          "dateTime": {
+            "createdAt": 1716393637016,
+            "updatedAt": 1716393637016
+          }
+        }
+      },
+      "2": {
+        "1": {
+          "dateTime": {
+            "createdAt": 1716309357935,
+            "updatedAt": 1716309357935
+          }
+        },
+        "3": {
+          "dateTime": {
+            "createdAt": 1716390383784,
+            "updatedAt": 1716390383784
+          }
+        }
+      },
+      "3": {
+        "2": {
+          "dateTime": {
+            "createdAt": 1716393634620,
+            "updatedAt": 1716393634620
+          }
+        }
       }
     }
   }

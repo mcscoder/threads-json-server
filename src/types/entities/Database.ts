@@ -5,6 +5,7 @@ import { WatchedThreadEntity } from "./WatchedThread";
 import { ResourceEntity } from "./Resource";
 import { UsernameEntity } from "./Username";
 import { ActivityEntity } from "./Activity";
+import { FollowEntity } from "./Follow";
 
 export type DatabaseEntity = {
   usernames: UsernameEntity;
@@ -14,4 +15,5 @@ export type DatabaseEntity = {
   watchedThreads: WatchedThreadEntity;
   resources: ResourceEntity;
   activities: ActivityEntity;
+  follows: FollowEntity;
 };
