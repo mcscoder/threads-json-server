@@ -973,30 +973,35 @@ export class Repository {
 
   // 4.2. Get followings of user
   getFollowingUsers(
-    currentUserId: number,
-    targetUserId: number
-  ): UserResponse[] {
-    const userResponses: UserResponse[] = [];
+    targetUserId: number,
+    currentUserId: number
+  ): FollowActivityResponse[] {
+    const followActivityResponses: FollowActivityResponse[] = [];
 
-    const followings = this.db.get("follows").value().followings;
+    // Get following user ids from target user
+    const followingUserIds = this.db.get("follows").value().followings[
+      targetUserId
+    ];
 
-    const followingUserIds = followings[targetUserId];
+    if (followingUserIds) {
+      const followingUserIdList = Object.keys(followingUserIds);
+      followingUserIdList.forEach((userId) => {
+        const userResponse = this.getUserById(Number(userId), currentUserId)!;
+        const dateTime = followingUserIds[Number(userId)]!;
 
-    if (!followingUserIds) {
-      return userResponses;
+        followActivityResponses.push({
+          user: userResponse,
+          ...dateTime,
+        });
+      });
     }
 
-    const followingUserIdList = Object.keys(followingUserIds);
-    followingUserIdList.forEach((otherUserId) => {
-      const userResponse = this.getUserById(
-        Number(otherUserId),
-        currentUserId
-      )!;
-      console.log(userResponse);
-      userResponses.push(userResponse);
-    });
+    // sort by newest first
+    followActivityResponses.sort(
+      (a, b) => b.dateTime.createdAt - a.dateTime.createdAt
+    );
 
-    return userResponses;
+    return followActivityResponses;
   }
 
   // 4.3. Get following status
@@ -1013,29 +1018,35 @@ export class Repository {
 
   // 4.4. Get followers of user
   getFollowerUsers(
-    currentUserId: number,
-    targetUserId: number
-  ): UserResponse[] {
-    const userResponses: UserResponse[] = [];
+    targetUserId: number,
+    currentUserId: number
+  ): FollowActivityResponse[] {
+    const followActivityResponses: FollowActivityResponse[] = [];
 
-    const followers = this.db.get("follows").value().followers;
+    // Get follower user ids from target user
+    const followerUserIds = this.db.get("follows").value().followers[
+      targetUserId
+    ];
 
-    const followerUserIds = followers[targetUserId];
+    if (followerUserIds) {
+      const followerUserIdList = Object.keys(followerUserIds);
 
-    if (!followerUserIds) {
-      return userResponses;
+      followerUserIdList.forEach((userId) => {
+        const userResponse = this.getUserById(Number(userId), currentUserId)!;
+        const dateTime = followerUserIds[Number(userId)]!;
+
+        followActivityResponses.push({
+          user: userResponse,
+          ...dateTime,
+        });
+      });
     }
 
-    const followerUserIdList = Object.keys(followers);
-    followerUserIdList.forEach((otherUserId) => {
-      const userResponse = this.getUserById(
-        Number(otherUserId),
-        currentUserId
-      )!;
+    // sort by newest first
+    followActivityResponses.sort(
+      (a, b) => b.dateTime.createdAt - a.dateTime.createdAt
+    );
 
-      userResponses.push(userResponse);
-    });
-
-    return userResponses;
+    return followActivityResponses;
   }
 }

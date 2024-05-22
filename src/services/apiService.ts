@@ -225,16 +225,6 @@ export function apiService(server: Application, db: Repository) {
     }
   });
 
-  // 3.2. Get follow activities
-  server.get("/api/activity/follows", (req, res) => {
-    const currentUserId = req.get("currentUserId");
-    const replies = db.getFollowActivities(Number(currentUserId));
-
-    if (replies) {
-      res.json(replies);
-    }
-  });
-
   // 4.1. Current user follow another user
   server.get("/api/follow", (req, res) => {
     const currentUserId = req.get("currentUserId");
@@ -251,25 +241,26 @@ export function apiService(server: Application, db: Repository) {
 
   // 4.2. Get user followings of user
   server.get("/api/followings", (req, res) => {
-    const currentUserId = req.get("userId");
+    const currentUserId = req.get("currentUserId");
     const targetUserId = req.get("targetUserId");
 
     const response = db.getFollowingUsers(
-      Number(currentUserId),
-      Number(targetUserId)
+      Number(targetUserId),
+      Number(currentUserId)
     );
 
     res.json(response);
   });
 
-  // 4.3. Get followers of user
+  // 4.3. Get user followers of user
   server.get("/api/followers", (req, res) => {
-    const currentUserId = req.get("userId");
+    const currentUserId = req.get("currentUserId");
     const targetUserId = req.get("targetUserId");
+    console.log(currentUserId, targetUserId);
 
     const response = db.getFollowerUsers(
-      Number(currentUserId),
-      Number(targetUserId)
+      Number(targetUserId),
+      Number(currentUserId)
     );
 
     res.json(response);
